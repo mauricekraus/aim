@@ -44,7 +44,10 @@ def get_typename(type_: Type, inner_type: Optional[Type] = None) -> str:
 
 
 def get_object_typename(obj: Any) -> str:
-    return get_typename(type(obj))
+    if isinstance(obj, list) and len(obj) > 0:
+        return get_typename(type(obj), type(obj[0]))
+    else:
+        return get_typename(type(obj))
 
 
 def get_common_typename(types: Iterator[str]) -> str:
@@ -92,13 +95,13 @@ def get_sequence_value_types(seq_type: Type['Sequence']) -> Tuple[str, ...]:
 
 def auto_registry(cls):
     @classmethod
-    def get_typename_fn(cls_):
+    def get_typename_fn(cls_) -> str:
         if hasattr(cls_, '__aim_package__'):
             return f'{cls_.__aim_package__}.{cls_.__name__}'
         return cls_.__name__
 
     @classmethod
-    def get_full_typename_fn(cls_):
+    def get_full_typename_fn(cls_) -> str:
         if cls_ == cls:
             return cls_.get_typename()
         for base in cls_.__bases__:
