@@ -46,7 +46,7 @@ const markdownComponentsOverride = {
         <div style={{ height, display: height === 0 ? 'none' : undefined }}>
           <Board
             key={children[0]}
-            data={{ code: children[0], id: node.position.start.line }}
+            data={{ code: children[0], path: node.position.start.line }}
             editMode={false}
             previewMode
           />
@@ -125,7 +125,6 @@ function Report({
               useLocalStorage={true}
               className='ReportVisualizer__main'
               sizes={editMode || newMode ? [40, 60] : [100, 0]}
-              minSize={[400, 400]}
             >
               {editMode || newMode ? (
                 <SplitPaneItem className='ReportVisualizer__main__editor'>

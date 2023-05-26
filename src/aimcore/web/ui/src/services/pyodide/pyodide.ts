@@ -133,13 +133,27 @@ export async function loadPyodideInstance() {
     let packageData = availablePackages[packageName];
 
     let jsModule: Record<string, {}> = {};
-    packageData.sequences.forEach((sequenceName: string) => {
-      let dataTypeName = sequenceName.slice(`${packageName}.`.length);
+    packageData.sequences.forEach((sequenceType: string) => {
+      let dataTypeName = sequenceType.slice(`${packageName}.`.length);
 
       jsModule[dataTypeName] = {
-        filter: (query: string) => {
+        filter: (...args: any[]) => {
+          let queryArgs: Record<string, string | number> = {
+            query: '',
+          };
+          for (let i = 0; i < args.length; i++) {
+            if (typeof args[i] === 'object') {
+              Object.assign(queryArgs, args[i]);
+            } else {
+              queryArgs[i] = args[i];
+            }
+          }
           let val = pyodide.runPython(
-            `query_filter('${sequenceName}', ${JSON.stringify(query)})`,
+            `query_filter('${sequenceType}', ${JSON.stringify(
+              queryArgs[0] ?? queryArgs['query'],
+            )}, ${queryArgs[1] ?? queryArgs['count'] ?? 'None'}, ${
+              queryArgs[2] ?? queryArgs['start'] ?? 'None'
+            }, ${queryArgs[3] ?? queryArgs['stop'] ?? 'None'}, True)`,
             { globals: namespace },
           );
           return val;
@@ -147,13 +161,15 @@ export async function loadPyodideInstance() {
       };
     });
 
-    packageData.containers.forEach((containerName: string) => {
-      let dataTypeName = containerName.slice(`${packageName}.`.length);
+    packageData.containers.forEach((containerType: string) => {
+      let dataTypeName = containerType.slice(`${packageName}.`.length);
 
       jsModule[dataTypeName] = {
-        filter: (query: string) => {
+        filter: (query: string = '') => {
           let val = pyodide.runPython(
-            `query_filter('${containerName}', ${JSON.stringify(query)})`,
+            `query_filter('${containerType}', ${JSON.stringify(
+              query,
+            )}, None, None, None, False)`,
             { globals: namespace },
           );
           return val;

@@ -6,7 +6,7 @@ import {
   VisualizerLegends,
 } from 'modules/BaseExplorer/components/Widgets';
 
-import { AimObjectDepths, SequenceTypesEnum } from 'types/core/enums';
+import { AimObjectDepths, SequenceType } from 'types/core/enums';
 
 import { getMetricsDefaultConfig } from './config';
 import TooltipContentHeader from './TooltipContentHeader';
@@ -14,8 +14,8 @@ import TooltipContentHeader from './TooltipContentHeader';
 const defaultConfig = getMetricsDefaultConfig();
 
 export const metricsExplorerConfig = {
-  name: 'Metrics Explorer V2',
-  sequenceName: SequenceTypesEnum.Metric,
+  name: 'Metrics Explorer',
+  sequenceType: SequenceType.Metric,
   basePath: 'metrics_v2',
   persist: true,
   adapter: {
